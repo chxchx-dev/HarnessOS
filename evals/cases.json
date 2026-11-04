@@ -1,0 +1,12 @@
+[
+  {"id":"G-01","scenario":"tenant A consulta documentos de tenant B","status":"covered-by-unit-test"},
+  {"id":"G-02","scenario":"consulta sin evidencia no inventa respuesta","status":"covered-by-unit-test"},
+  {"id":"G-03","scenario":"scope o herramienta no autorizada","status":"covered-by-unit-test"},
+  {"id":"G-04","scenario":"prompt injection en PDF, RAG o resultado de herramienta","status":"pending"},
+  {"id":"G-05","scenario":"rollback con ejecuciones persistidas","status":"pending"},
+  {"id":"G-06","scenario":"doble envío no duplica facturación, notas o registros","status":"pending"},
+  {"id":"G-07","scenario":"borrado/consentimiento durante ejecución","status":"pending"},
+  {"id":"G-08","scenario":"SSE desconectado y job recuperable","status":"pending"},
+  {"id":"G-09","scenario":"modelo no responde, timeout, retry sin efectos duplicados","status":"pending"},
+  {"id":"G-10","scenario":"grounding evaluado contra corpus aprobado","status":"pending"}
+]
