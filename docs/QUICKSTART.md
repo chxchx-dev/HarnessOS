@@ -2,18 +2,18 @@
 
 [← Índice de documentación](INDEX.md) · [README](../README.md)
 
-Esta guía te lleva de una demo local a un plan de integración. HarnessOS es una biblioteca TypeScript que corre dentro de tu backend; no levanta un servicio HTTP aparte.
+Esta guía te lleva de una demo local a un plan de integración. HarnessOS es una biblioteca Rust para un backend Rust; no levanta un servicio HTTP aparte.
 
 ## 1. Ejecuta la demo
 
-Necesitas Node.js **22.10 o superior**. Desde la raíz del repositorio:
+Necesitas Rust estable y Cargo. Desde la raíz del repositorio:
 
 ```bash
-npm run demo
-npm test
+cargo run --release --locked --bin harnessos-demo
+cargo test --locked
 ```
 
-La demo funciona offline. Usa un modelo determinista y documentos inventados. Verás una advertencia de datos ficticios, dos preguntas, respuestas y fuentes con prefijo `DEMO-`. El smoke test ejecuta el mismo comando y comprueba esa salida.
+La demo funciona offline. Usa un modelo determinista y documentos inventados. Verás una advertencia de datos ficticios, dos preguntas, respuestas y fuentes con prefijo `DEMO-`.
 
 ## 2. Sigue una ejecución
 
@@ -51,34 +51,35 @@ Empieza con una capacidad de **solo lectura** que ya exista. Mantén intactos el
 La llamada interna tiene esta forma:
 
 ```ts
-const result = await runtime.execute({
-  skillId: "knowledge.retrieve",
-  version: "1.0.0",
-  input: { question: existingRequest.message },
-  principal: principalFromVerifiedServerAuth(request),
-  correlationId: existingRequestId,
+let result = runtime.execute(RunRequest {
+    skill_id: "knowledge.retrieve".to_owned(),
+    version: "1.0.0".to_owned(),
+    input: serde_json::json!({ "question": existing_request.message }),
+    principal: principal_from_verified_server_auth(existing_request)?,
+    correlation_id: existing_request.id.clone(),
+    requested_budget: None,
 });
 
-if (!result.ok) {
-  return mapHarnessErrorToExistingContract(result.error);
+match result {
+    RunResult::Failure { error, .. } => map_harness_error_to_existing_contract(error),
+    RunResult::Success { output, .. } => map_output_to_existing_dto(output),
 }
-
-return mapOutputToExistingDto(result.output);
 ```
 
-Los nombres `principalFromVerifiedServerAuth`, `mapHarnessErrorToExistingContract` y `mapOutputToExistingDto` representan funciones de tu aplicación, no APIs incluidas aquí. El presupuesto máximo lo fija el servidor; una llamada puede reducirlo, nunca ampliarlo.
+Los nombres `principal_from_verified_server_auth`, `map_harness_error_to_existing_contract` y `map_output_to_existing_dto` representan funciones de tu aplicación, no APIs incluidas aquí. El presupuesto máximo lo fija el servidor; una llamada puede reducirlo, nunca ampliarlo. Este ejemplo es Rust; otro lenguaje necesita un adaptador propio, que este repositorio no incluye.
 
-## 4. Corre el typecheck
+## 4. Revisa el código
 
-La demo y las pruebas no necesitan paquetes. El chequeo completo también requiere TypeScript, declarado como dependencia de desarrollo:
+Cargo resuelve las dependencias fijadas por `Cargo.lock`:
 
 ```bash
-npm install --no-audit --no-fund
-npm run check
+cargo fmt --check
+cargo check --all-targets --locked
+cargo test --locked
 ```
 
-## Qué demuestra el ejemplo
+## Qué demuestra el ejemplo y qué no
 
-La prueba local cubre ejecución, scopes, allowlist, aislamiento por tenant, abstención sin evidencia y respuesta legible con fuentes ficticias. No mide calidad de un LLM ni representa persistencia. Para usar Ollama local, sigue las instrucciones opcionales del [README](../README.md#probar-con-ollama-opcional).
+Las pruebas cubren ejecución, scopes, allowlist, aislamiento por tenant, abstención sin evidencia, límites de memoria, concurrencia, timeout y fuentes ficticias. No miden calidad de un LLM ni representan persistencia. Para usar Ollama local, sigue las instrucciones opcionales del [README](../README.md#probar-con-ollama-opcional).
 
-Antes de producción hacen falta autenticación y políticas reales, evaluación de calidad, privacidad y retención, observabilidad, cancelación cooperativa y rollback. La memoria de ejemplo vive en RAM y no es apta para datos personales.
+El runtime usa 8 workers por defecto, con stack solicitado de 256 KiB; `RuntimeConfig` permite ajustarlos. También limita por estimación la entrada (1 MiB), cada resultado de tool (4 MiB) y la salida (4 MiB). La memoria efímera tiene un máximo configurable, de 16 MiB contabilizados por defecto. Estos límites no equivalen a un techo exacto de RSS ni impiden asignaciones internas de una tool. HarnessOS no reserva toda la RAM disponible; ajusta los límites con una carga representativa del PC o VPS. Antes de producción hacen falta autenticación y políticas reales, evaluación de calidad, privacidad y retención, observabilidad, cancelación cooperativa y rollback. La memoria de ejemplo vive en RAM y no es apta para datos personales.

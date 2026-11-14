@@ -1,0 +1,21 @@
+[package]
+name = "harnessos"
+version = "0.2.0"
+edition = "2024"
+description = "Runtime embebible para capacidades de IA con límites explícitos"
+license = "MIT"
+
+[lib]
+path = "rust/src/lib.rs"
+
+[[bin]]
+name = "harnessos-demo"
+path = "rust/src/main.rs"
+
+[[bin]]
+name = "harnessos-benchmark"
+path = "rust/src/bin/runtime-benchmark.rs"
+
+[dependencies]
+serde_json = "1.0.154"
+ureq = { version = "3.5.2", default-features = false, features = ["json"] }

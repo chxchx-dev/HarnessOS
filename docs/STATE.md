@@ -2,38 +2,51 @@
 
 [← Índice de documentación](INDEX.md) · [Roadmap](ROADMAP.md)
 
-**Fecha:** 2026-11-04  
-**Versión:** `0.1.0` · semilla experimental · TypeScript
+**Fecha:** 2026-11-14 · **Versión:** `0.2.0` · semilla experimental · Rust
 
 ## Disponible hoy
 
-- Runtime interno con resolución `skill@version`, validación de identidad/scopes, allowlist de tools, presupuesto y timeout.
+- Biblioteca Rust con resolución `skill@version`, validación de identidad/scopes, allowlist de tools, presupuesto, timeout y hasta 8 workers reutilizables por defecto.
 - Skills `knowledge.retrieve@1.0.0` y `knowledge.answer@1.0.0`.
-- Fixtures sintéticas multi-tenant, respuesta determinista offline y Ollama local opt-in.
-- CLI de demo legible, guía de inicio rápido y prueba de humo del ejemplo.
-- README como página de entrada, índice de documentación y guías conectadas por navegación interna.
-- Trazas de runtime limitadas a metadata, sin inputs, respuestas ni documentos.
+- Fixtures sintéticas multi-tenant, respuesta determinista offline y Ollama local opt-in con proxy y redirecciones desactivados.
+- `RuntimeConfig` limita estimaciones de entrada/salida y ajusta workers/stack. `EphemeralMemory` volátil y configurable: por defecto 16 MiB de bytes contabilizados, 4096 entradas y 1 KiB por registro.
+- CLI Rust de demo y benchmark repetible; implementación TypeScript retirada después de paridad.
+- CI de Rust, guía de inicio rápido y documentación conectada.
+- Trazas limitadas a metadata, sin inputs, respuestas ni documentos.
 
 ## Fuera de alcance
 
-No hay autenticación real, permisos de dominio, API HTTP/SSE, integración con productos, base de datos, memoria durable, RAG vectorial, jobs, colas, workflows reanudables, tools de escritura ni despliegue.
+No hay autenticación real, permisos de dominio, API HTTP/SSE, integración con productos, base de datos, memoria durable, RAG vectorial, jobs, colas, workflows reanudables, tools de escritura ni despliegue. HarnessOS asigna memoria al necesitarla; no reserva toda la RAM libre del host.
 
 ## Evidencia de esta revisión
 
 | Comando | Resultado |
 |---|---|
-| `node --experimental-strip-types --test tests/*.test.mjs` | Aprobado: **12/12** |
-| `node --experimental-strip-types scripts/demo.mjs` | Aprobado: dos casos sintéticos y fuentes `DEMO-` |
+| `cargo test --locked` | Aprobado: **23/23** (22 unitarias y 1 de demo) |
+| `cargo fmt --check` | Aprobado |
+| `cargo check --all-targets --locked` | Aprobado |
+| `cargo run --release --locked --bin harnessos-demo` | Aprobado: dos casos sintéticos y fuentes `DEMO-` |
+| `npm run check` antes de retirar TypeScript | Aprobado: typecheck y **12/12** pruebas de paridad |
 | Enlaces Markdown locales activos | Aprobados |
 | `git diff --check` | Aprobado |
-| `npm run check` | Incompleto: falta `tsc`; instalar TypeScript falló con `EACCES` en el registro npm |
 
-Entorno: Node.js `v24.22.2`. No se probó Ollama, despliegue ni integración con un backend.
+Entorno local: Rust `1.99.1`, Node.js `25.0.0`, Windows `x86_64`. Ollama, despliegue e integración con un backend no se probaron.
+
+### Medición sintética de recursos
+
+Una corrida de referencia con un calentamiento y cinco muestras de 10 000 ejecuciones de `knowledge.retrieve`, en modo release:
+
+| Implementación | Muestras de tiempo (ms) | Mediana | Working set/RSS observado |
+|---|---|---:|---:|
+| Node.js 25, TypeScript | 148,9 · 198,2 · 164,0 · 139,9 · 194,6 | 164,0 ms | pico 59,68 MB; RSS tras GC 58,61 MB |
+| Rust 1.99, pool de 8 workers y límites JSON | 370,73 · 367,93 · 380,18 · 413,47 · 389,68 | 380,18 ms | pico 3,47 MB |
+
+En esta operación sintética Rust fue aproximadamente 2,3× más lento y usó alrededor de 94 % menos memoria residente. El harness de Node reutilizó un principal y el de Rust lo clona por solicitud, así que la comparación es direccional. El muestreo es exploratorio y depende del host; no predice latencia o consumo con Ollama, modelos o servicios del producto. Repetir con tráfico representativo en el PC/VPS objetivo antes de ajustar workers o establecer un SLO.
 
 ## Siguientes hitos
 
-1. Validar la guía con una persona que no conozca el código y anotar fricciones.
-2. Cuando se elija un consumidor, completar la [matriz de contrato](CONSUMER_CONTRACT_TEMPLATE.md) con su propio repositorio y fixtures sintéticas.
-3. Caracterizar un caso de solo lectura en ese consumidor antes de implementar un adaptador.
+1. Validar el inicio rápido con una persona que no conozca el código y anotar fricciones.
+2. Cuando se elija un consumidor, completar la [matriz de contrato](CONSUMER_CONTRACT_TEMPLATE.md) con su repositorio y fixtures sintéticas.
+3. Repetir la carga con tráfico representativo en el host objetivo antes de configurar sus límites.
 
 Consulta el [roadmap](ROADMAP.md) para gates y criterios de avance.

@@ -2,11 +2,11 @@
 
 **Un runtime pequeño y reutilizable para ejecutar capacidades de IA con límites y controles explícitos.**
 
-HarnessOS es una semilla de *harness engineering* en TypeScript. Se integra dentro del backend de cada producto: organiza skills, herramientas permitidas, identidad verificada, presupuestos y resultados tipados. No es un sistema operativo, un servidor HTTP ni una plataforma autónoma.
+HarnessOS es una semilla de *harness engineering* en Rust. Se integra como biblioteca dentro de un backend Rust: organiza skills, herramientas permitidas, identidad verificada, presupuestos y resultados tipados. No es un sistema operativo, un servidor HTTP ni una plataforma autónoma.
 
 | Estado | Stack | Ejemplo local | Uso previsto |
 |---|---|---|---|
-| Semilla experimental | TypeScript · Node.js 22.10+ | Sintético y offline | Aprender, probar contratos y adaptar detrás de un backend existente |
+| Semilla experimental | Rust estable · Cargo | Sintético y offline | Aprender, probar contratos y adaptar detrás de un backend existente |
 
 > [!WARNING]
 > No uses la semilla directamente con datos personales, escolares, clínicos o financieros. La demo usa fixtures inventados y no se conecta a sistemas reales. El paquete todavía no está listo para producción.
@@ -31,20 +31,20 @@ El producto conserva sus rutas, DTO, autenticación, cuotas, streaming y persist
 
 ## Prueba en 2 comandos
 
-Requiere Node.js **22.10 o superior**. No hace falta instalar paquetes para ejecutar la demo ni las pruebas.
+Requiere Rust estable y Cargo. En la primera ejecución Cargo descarga las dependencias declaradas en `Cargo.lock`.
 
 ```bash
-npm run demo
-npm test
+cargo run --release --locked --bin harnessos-demo
+cargo test --locked
 ```
 
-La demo imprime dos casos ficticios, respuestas, referencias `DEMO-` y el estado de verificación. El modelo predeterminado es determinista y está etiquetado como demo; no es un LLM. La prueba de humo ejecuta el script y comprueba que siga mostrando datos sintéticos y legibles.
+La demo imprime dos casos ficticios, respuestas, referencias `DEMO-` y el estado de verificación. El modelo predeterminado es determinista y está etiquetado como demo; no es un LLM.
 
-Para comprobar tipos también, instala la única dependencia de desarrollo declarada y ejecuta:
+Para revisar formato y tipos:
 
 ```bash
-npm install --no-audit --no-fund
-npm run check
+cargo fmt --check
+cargo check --all-targets --locked
 ```
 
 ### Probar con Ollama (opcional)
@@ -53,14 +53,14 @@ Requiere Ollama corriendo en `localhost` y un modelo descargado por tu cuenta. L
 
 ```bash
 # macOS / Linux
-HARNESS_MODEL=ollama OLLAMA_MODEL=qwen3:4b-instruct npm run demo
+HARNESS_MODEL=ollama OLLAMA_MODEL=qwen3:4b-instruct cargo run --release --locked --bin harnessos-demo
 ```
 
 ```powershell
 # Windows PowerShell
 $env:HARNESS_MODEL = "ollama"
 $env:OLLAMA_MODEL = "qwen3:4b-instruct"
-npm run demo
+cargo run --release --locked --bin harnessos-demo
 ```
 
 ## Qué incluye
@@ -69,10 +69,21 @@ npm run demo
 - `Registry`: resuelve skills por `id@version` y tools por identificador.
 - `knowledge.retrieve`: recupera evidencia sin llamar un modelo.
 - `knowledge.answer`: genera una respuesta mediante un `ModelPort` y devuelve fuentes.
-- `demoModel`: respuesta determinista para desarrollo offline. `createOllamaModel`: opción local explícita.
-- Fixtures multi-tenant y `EphemeralMemory`: ejemplos de prueba, no persistencia.
+- `DemoModel`: respuesta determinista para desarrollo offline. `OllamaModel`: opción local explícita.
+- Fixtures multi-tenant y `EphemeralMemory`: ejemplos volátiles, no persistencia. El almacén limita entradas y bytes por instancia.
+- `HarnessRuntime`: usa por defecto 8 workers reutilizables con stack solicitado de 256 KiB; `RuntimeConfig` ajusta concurrencia, stack y estimaciones máximas de entrada (1 MiB), resultado de tool (4 MiB) y salida (4 MiB).
 
 La salida generativa declara `verified: false`: las fuentes citadas no prueban por sí solas que una respuesta sea correcta.
+
+El runtime asigna memoria al necesitarla; no reserva automáticamente toda la RAM libre. Los límites JSON son estimaciones de memoria en las fronteras del runtime, no un hard cap de RSS ni un sandbox para allocations internas de tools/proveedores. El operador configura límites de memoria y concurrencia según el host, otras cargas y el SLO. La memoria efímera no es adecuada para datos reales.
+
+Para repetir la carga sintética de 10 000 consultas en cinco muestras:
+
+```bash
+cargo run --release --locked --bin harnessos-benchmark
+```
+
+La utilidad imprime tiempos y pausa unos segundos para permitir medir el working set con las herramientas del sistema. No representa una carga de producción.
 
 ## Reutilizarlo en otro proyecto
 

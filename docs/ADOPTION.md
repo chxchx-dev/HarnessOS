@@ -6,6 +6,8 @@ Integra HarnessOS dentro del backend que ya existe. El backend sigue siendo resp
 
 > **Regla de entrada:** empieza con una operación de solo lectura y un consumidor. No conectes herramientas de escritura ni crees un gateway nuevo para adoptar el runtime.
 
+La implementación de este repositorio es una biblioteca Rust. Para integrarla directamente, el backend consumidor debe compilar Rust. Un consumidor en otro lenguaje necesitaría un adaptador o binding separado, con su propio contrato y decisión; esta semilla no agrega transporte ni altera rutas del producto.
+
 ## Antes de programar
 
 Completa una [matriz de compatibilidad](CONSUMER_CONTRACT_TEMPLATE.md) con evidencia del repositorio producto:

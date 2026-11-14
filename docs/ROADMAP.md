@@ -4,6 +4,17 @@
 
 El roadmap separa la semilla que ya corre de las capacidades que requieren adopción, datos o decisiones operativas. Una casilla solo se marca cuando hay evidencia en el entorno indicado.
 
+## R0 · Port completo del MVP a Rust
+
+- [x] Portar runtime, contratos, skills, tools y modelos demo/Ollama.
+- [x] Mantener el mismo comportamiento observable en pruebas de scopes, allowlist, aislamiento, abstención, timeout y salida de demo.
+- [x] Sustituir la implementación TypeScript por Cargo y CI de Rust.
+- [x] Añadir límites estimados para entradas/resultados/salidas JSON, memoria efímera acotada y concurrencia configurable sin reservar RAM libre.
+- [x] Medir latencia y memoria en una carga sintética repetida y documentar el costo observado.
+- [ ] Repetir la medición con tráfico representativo en el PC/VPS objetivo.
+
+**Salida:** el MVP local se ejecuta completamente en Rust; no implica que haya integración con un backend o preparación para producción.
+
 ## P0 · Semilla utilizable
 
 - [x] Núcleo neutral a producto con contratos internos.

@@ -1,4 +1,4 @@
-name: Checks
+name: Rust checks
 on:
   pull_request:
   push:
@@ -8,8 +8,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions-rust-lang/setup-rust-toolchain@v2
         with:
-          node-version: '22'
-      - run: npm install --no-audit --no-fund
-      - run: npm run check
+          components: rustfmt
+      - run: cargo fmt --check
+      - run: cargo check --all-targets --locked
+      - run: cargo test --locked

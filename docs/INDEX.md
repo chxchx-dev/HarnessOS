@@ -32,3 +32,5 @@ Elige una ruta según lo que quieras hacer. La demo funciona sin servicios exter
 ## Decisiones
 
 - [ADR 0001: núcleo embebible antes que plataforma](DECISIONS/0001-monolith-first.md)
+- [ADR 0002: port incremental a Rust](DECISIONS/0002-rust-port.md)
+- [ADR 0003: workers acotados y reutilizables](DECISIONS/0003-bounded-workers.md)

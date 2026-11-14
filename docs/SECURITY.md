@@ -22,8 +22,10 @@ Esta página describe las fronteras de seguridad de la semilla. Los controles de
 ## Recursos y red
 
 - El servidor fija el máximo de llamadas a tools y timeout; una solicitud solo puede reducirlos.
-- La cancelación requiere que tools y proveedores cooperen con `AbortSignal`.
-- Ollama de ejemplo solo acepta loopback. No permitas URL elegida por usuarios ni amplíes la red sin controles SSRF y autenticación.
+- La cancelación requiere que tools y proveedores cooperen con `CancellationToken`; una tarea que no coopera conserva su worker hasta terminar.
+- El runtime limita concurrencia con 8 workers por defecto y admite configuración explícita de cantidad y stack.
+- `RuntimeConfig` rechaza entradas, resultados de tools y salidas que superen sus estimaciones de memoria. El control ocurre después de que el valor existe en el proceso y no limita asignaciones internas de tools/modelos.
+- Ollama de ejemplo solo acepta loopback, desactiva proxies y no sigue redirecciones. No permitas URL elegida por usuarios ni amplíes la red sin controles SSRF y autenticación.
 - No habilites shell, SQL libre, filesystem ni HTTP arbitrario como tools.
 
 ## Datos y observabilidad
@@ -31,7 +33,8 @@ Esta página describe las fronteras de seguridad de la semilla. Los controles de
 - La traza del runtime contiene metadata de ejecución, nunca prompts, respuestas ni documentos.
 - Los IDs de correlación también pueden ser sensibles; controla acceso y cardinalidad.
 - Define minimización, consentimiento, retención, exportación, borrado y revocación en el backend antes de usar datos reales.
-- `EphemeralMemory` es solo una muestra en RAM; no almacena de forma durable ni segura.
+- `EphemeralMemory` es solo una muestra en RAM con límites configurables; contabiliza bytes de claves y valores, limita entradas y no almacena de forma durable ni segura.
+- HarnessOS no reserva toda la RAM libre. El presupuesto de memoria debe configurarlo el operador de acuerdo con otras cargas y los límites del host.
 
 ## Antes de una escritura
 
