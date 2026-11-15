@@ -1,6 +1,6 @@
 # Guía de adopción
 
-[← Índice de documentación](INDEX.md) · [Inicio rápido](QUICKSTART.md)
+[README](../README.md) · [Arquitectura](ARCHITECTURE.md)
 
 Integra HarnessOS dentro del backend que ya existe. El backend sigue siendo responsable de identidad, permisos de negocio, transporte, cuotas y persistencia.
 
@@ -10,7 +10,7 @@ La implementación de este repositorio es una biblioteca Rust. Para integrarla d
 
 ## Antes de programar
 
-Completa una [matriz de compatibilidad](CONSUMER_CONTRACT_TEMPLATE.md) con evidencia del repositorio producto:
+Antes de integrar, registra en el repositorio consumidor la evidencia de compatibilidad:
 
 - endpoint, DTO y validaciones;
 - guards, fuente de identidad, tenant, roles y cuotas;
@@ -68,4 +68,4 @@ Un piloto queda listo para decisión cuando presenta:
 - política de logs, retención y borrado;
 - owner, flag, canary y rollback ensayado.
 
-Consulta [Seguridad](SECURITY.md), [Riesgos](RISKS.md) y [Roadmap](ROADMAP.md) para los gates pendientes.
+Consulta [Seguridad](SECURITY.md) y [Roadmap](ROADMAP.md) para los controles y gates pendientes.

@@ -8,6 +8,6 @@
 6. Herramientas de lectura por defecto. Una herramienta de escritura requiere autorización por operación, idempotencia, auditoría, reconciliación y aprobación humana cuando corresponda.
 7. No guardar secretos, prompts completos, contenido personal, razonamiento del modelo ni documentos en trazas/fixtures.
 8. No presentar código de demostración o memoria en RAM como persistencia/seguridad de producción.
-9. Antes de marcar tarea completa: ejecutar `npm run check` y añadir/reparar pruebas. No borrar pruebas fallidas para aprobar.
+9. Antes de marcar tarea completa: ejecutar `cargo fmt --check`, `cargo check --all-targets --locked` y `cargo test --locked`. No borrar pruebas fallidas para aprobar.
 10. Actualizar `docs/STATE.md` y evidencia de pruebas; no afirmar despliegues ni migraciones sin prueba.
 11. No realizar commit, push, despliegue ni alterar credenciales/producción sin autorización específica.

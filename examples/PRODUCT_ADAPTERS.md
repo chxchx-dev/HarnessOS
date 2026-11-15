@@ -1,6 +1,6 @@
 # Ficha de adaptador de producto
 
-[← Índice de documentación](../docs/INDEX.md) · [Guía de adopción](../docs/ADOPTION.md)
+[README](../README.md) · [Guía de adopción](../docs/ADOPTION.md)
 
 Completa una ficha por caso de uso y guárdala en la documentación del backend que lo implementa. Hazlo antes de escribir código para confirmar que el adaptador conserva el contrato y ownership existentes.
 

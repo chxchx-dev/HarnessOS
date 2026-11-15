@@ -1,6 +1,6 @@
 # Seguridad
 
-[← Índice de documentación](INDEX.md) · [Riesgos](RISKS.md)
+[README](../README.md) · [Riesgos pendientes](RISKS.md)
 
 Esta página describe las fronteras de seguridad de la semilla. Los controles del runtime reducen riesgos comunes, pero no reemplazan autenticación ni políticas del producto.
 

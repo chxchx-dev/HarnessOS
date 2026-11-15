@@ -1,6 +1,6 @@
 # Arquitectura
 
-[← Índice de documentación](INDEX.md) · [Inicio rápido](QUICKSTART.md)
+[README](../README.md)
 
 HarnessOS es un runtime embebible. Coordina procedimientos de IA dentro del backend del producto y delega el acceso a datos a servicios de dominio existentes.
 
@@ -70,4 +70,4 @@ El timeout cancela mediante `CancellationToken`, pero una dependencia que ignore
 - El contenido recuperado es dato no confiable. No puede cambiar scopes ni reglas del runtime.
 - HarnessOS no debe convertirse en un segundo orquestador paralelo al producto.
 
-Para la secuencia de integración, ve a [Adopción](ADOPTION.md). Para las estructuras concretas, revisa el [Inicio rápido](QUICKSTART.md).
+Para integrar el runtime, ve a [Adopción](ADOPTION.md).

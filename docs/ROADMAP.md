@@ -1,6 +1,6 @@
 # Roadmap
 
-[← Índice de documentación](INDEX.md) · [Estado actual](STATE.md)
+[README](../README.md) · [Estado actual](STATE.md)
 
 El roadmap separa la semilla que ya corre de las capacidades que requieren adopción, datos o decisiones operativas. Una casilla solo se marca cuando hay evidencia en el entorno indicado.
 
@@ -8,7 +8,6 @@ El roadmap separa la semilla que ya corre de las capacidades que requieren adopc
 
 - [x] Portar runtime, contratos, skills, tools y modelos demo/Ollama.
 - [x] Mantener el mismo comportamiento observable en pruebas de scopes, allowlist, aislamiento, abstención, timeout y salida de demo.
-- [x] Sustituir la implementación TypeScript por Cargo y CI de Rust.
 - [x] Añadir límites estimados para entradas/resultados/salidas JSON, memoria efímera acotada y concurrencia configurable sin reservar RAM libre.
 - [x] Medir latencia y memoria en una carga sintética repetida y documentar el costo observado.
 - [ ] Repetir la medición con tráfico representativo en el PC/VPS objetivo.

@@ -1,6 +1,6 @@
 # Riesgos y límites conocidos
 
-[← Índice de documentación](INDEX.md) · [Seguridad](SECURITY.md) · [Roadmap](ROADMAP.md)
+[README](../README.md) · [Seguridad](SECURITY.md) · [Roadmap](ROADMAP.md)
 
 Los tests de fixture prueban contratos internos. No prueban una integración de producto ni preparan HarnessOS para producción.
 
